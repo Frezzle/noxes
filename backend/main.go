@@ -2,32 +2,36 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"noxes/backend/tictactoe"
+	"time"
 )
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	game := tictactoe.NewGame()
 	game.PrintBoard()
 
-	err := game.MakeMove(tictactoe.Cross, 2, 0)
-	fmt.Println("error:", err)
-	game.PrintBoard()
+	for !game.IsGameOver() {
+		randInt := rand.Int() % 5
+		var move tictactoe.Cell
+		if randInt == 1 {
+			move = tictactoe.Cross
+		} else {
+			move = tictactoe.Nought
+		}
+		x := rand.Int() % 3
+		y := rand.Int() % 3
+		fmt.Printf("Trying move: %s at (%d,%d)\n", move.String(), x, y)
+		err := game.MakeMove(move, x, y)
+		if err != nil {
+			fmt.Println("error:", err)
+			fmt.Println("game:", game)
+		} else {
+			game.PrintBoard()
+		}
+	}
 
-	err = game.MakeMove(tictactoe.Nought, 1, 0)
-	fmt.Println("error:", err)
-	game.PrintBoard()
-
-	err = game.MakeMove(tictactoe.Cross, 1, 1)
-	fmt.Println("error:", err)
-	game.PrintBoard()
-
-	err = game.MakeMove(tictactoe.Nought, 0, 1)
-	fmt.Println("error:", err)
-	game.PrintBoard()
-
-	err = game.MakeMove(tictactoe.Cross, 0, 2)
-	fmt.Println("error:", err)
-	game.PrintBoard()
-
-	fmt.Println("winner ->", game.GetWinner())
+	fmt.Println("Game over. Winner ->", game.GetWinner())
 }
