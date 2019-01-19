@@ -62,22 +62,22 @@ func NewGame() Game {
 }
 
 func (g *Game) MakeMove(cell Cell, x int, y int) error {
-	if g.board[y][x] != None {
-		return errors.New("cell already taken")
+	if x < 0 || x > 2 || y < 0 || y > 2 {
+		return errors.New("invalid location")
+	} else if g.board[y][x] != None {
+		return errors.New("cell already occupied")
 	} else if cell == None {
 		return errors.New("only Nought or Cross may be played")
 	} else if cell != g.nextTurn {
 		return fmt.Errorf("%s tried to make a move, but it's %s's turn",
 			cell.String(), g.nextTurn.String())
-	} else if x < 0 || x > 2 || y < 0 || y > 2 {
-		return errors.New("invalid location")
-	} else if g.IsGameOver() {
+	} else if g.gameOver {
 		return errors.New("cannot make moves on a finished game")
 	}
 
 	g.board[y][x] = cell
 	g.turnsTaken++
-	g.nextTurn = -g.nextTurn // able to do this as long as Nought == -Cross. // TODO: test this.
+	g.nextTurn = -g.nextTurn // able to do this as long as Nought == -Cross
 	g.updateOutcome(cell)
 
 	return nil
@@ -108,6 +108,7 @@ func (g Game) GetWinner() Cell {
 	return g.winner
 }
 
+// TODO: Have no printing from library; either return a string or other board state information.
 func (g Game) PrintBoard() {
 	fmt.Printf("%s | %s | %s\n", g.board[0][0].ShortString(), g.board[0][1].ShortString(), g.board[0][2].ShortString())
 	fmt.Println("----------")
