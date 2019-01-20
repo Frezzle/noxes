@@ -1,7 +1,7 @@
 package utils_test
 
 import (
-	"noxes/backend/utils"
+	"noxes/utils"
 	"testing"
 )
 

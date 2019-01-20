@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"noxes/backend/game_manager"
-	"noxes/backend/tictactoe"
+	"noxes/game_manager"
+	"noxes/tictactoe"
 	"strconv"
 )
 

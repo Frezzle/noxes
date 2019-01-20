@@ -1,9 +1,9 @@
 package game_manager_test
 
 import (
-	"noxes/backend/game_manager"
-	"noxes/backend/tictactoe"
-	"noxes/backend/utils"
+	"noxes/game_manager"
+	"noxes/tictactoe"
+	"noxes/utils"
 	"testing"
 )
 

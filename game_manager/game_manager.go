@@ -2,7 +2,7 @@ package game_manager
 
 import (
 	"fmt"
-	"noxes/backend/tictactoe"
+	"noxes/tictactoe"
 )
 
 type Game struct {

@@ -1,7 +1,7 @@
 package tictactoe_test
 
 import (
-	"noxes/backend/tictactoe"
+	"noxes/tictactoe"
 	"testing"
 )
 
