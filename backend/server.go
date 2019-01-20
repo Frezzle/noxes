@@ -11,7 +11,7 @@ import (
 
 func main() {
 	http.HandleFunc("/game", getGameHandler)
-	// http.HandleFunc("/games", getAllGamesHandler)
+	http.HandleFunc("/games", getAllGamesHandler)
 	http.HandleFunc("/game/create", createGameHandler)
 	// http.HandleFunc("/game/join", ...)
 	// http.HandleFunc("/game/move", ...)
@@ -29,6 +29,8 @@ type GameJSON struct {
 	GameOver string `json:"gameOver"`
 	Winner   string `json:"winner"`
 }
+
+type GamesJSON []GameJSON
 
 type IdJSON struct {
 	ID string `json:"id"`
@@ -75,13 +77,29 @@ func getGameHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
-// func getAllGamesHandler(w http.ResponseWriter, r *http.Request) {
-// 	if r.Method != "GET" {
-// 		http.Error(w, fmt.Sprintf("Invalid request method: %s", r.Method), http.StatusMethodNotAllowed)
-// 	}
+func getAllGamesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
+		return
+	} else if r.Body == nil {
+		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+		return
+	}
 
-// 	json.NewEncoder(w).Encode(games)
-// }
+	games := gm.GetAllGames()
+	gamesJSON := make([]GameJSON, 0, len(games))
+	for _, game := range games {
+		gamesJSON = append(gamesJSON, GameJSON{
+			ID:       strconv.FormatInt(int64(game.GetId()), 10),
+			Board:    game.GetBoard(),
+			NextTurn: string(game.GetNextTurn()),
+			GameOver: strconv.FormatBool(game.IsGameOver()),
+			Winner:   string(game.GetWinner()),
+		})
+	}
+
+	json.NewEncoder(w).Encode(gamesJSON)
+}
 
 func createGameHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
