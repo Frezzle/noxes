@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"noxes/backend/game_manager"
+	"noxes/backend/tictactoe"
 	"strconv"
 )
 
@@ -13,9 +14,12 @@ func main() {
 	http.HandleFunc("/game", getGameHandler)
 	http.HandleFunc("/games", getAllGamesHandler)
 	http.HandleFunc("/game/create", createGameHandler)
+	http.HandleFunc("/game/move", makeMoveHandler)
+	// TODO: more endpoints can be added to accomodate auth: (including updating above endpoints to require auth)
 	// http.HandleFunc("/game/join", ...)
-	// http.HandleFunc("/game/move", ...)
-	// http.HandleFunc("/game/resign", ...)
+	// http.HandleFunc("/game/quit", ...)
+	// http.HandleFunc("/user/register", ...)
+	// http.HandleFunc("/user/login", ...)
 
 	address := "localhost:9876"
 	log.Printf("Listening on %s", address)
@@ -89,7 +93,7 @@ func getAllGamesHandler(w http.ResponseWriter, r *http.Request) {
 	games := gm.GetAllGames()
 	gamesJSON := make([]GameJSON, 0, len(games))
 	for _, game := range games {
-		gamesJSON = append(gamesJSON, GameJSON{
+		gamesJSON = append(gamesJSON, GameJSON{ // TODO: refactor into own function.
 			ID:       strconv.FormatInt(int64(game.GetId()), 10),
 			Board:    game.GetBoard(),
 			NextTurn: string(game.GetNextTurn()),
@@ -115,4 +119,54 @@ func createGameHandler(w http.ResponseWriter, r *http.Request) {
 	var result = IdJSON{ID: strconv.FormatInt(int64(gameId), 10)}
 
 	json.NewEncoder(w).Encode(result)
+}
+
+type MakeMoveJSON struct {
+	GameID   string `json:"gameId"`
+	Location string `json:"location"`
+	Player   string `json:"player"`
+}
+
+func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
+		return
+	} else if r.Body == nil {
+		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+		return
+	}
+
+	var makeMoveJSON MakeMoveJSON
+	err := json.NewDecoder(r.Body).Decode(&makeMoveJSON)
+	if err != nil {
+		http.Error(w, fmt.Sprintf(`{"error":"%s"}`, err.Error()), http.StatusBadRequest)
+		return
+	} else if makeMoveJSON.GameID == "" || makeMoveJSON.Location == "" || makeMoveJSON.Player == "" { // TODO: refactor into own function to use on all API calls
+		http.Error(w, `{"error":"'gameId', 'location' and 'player' fields required"}`, http.StatusBadRequest)
+		return
+	}
+
+	gameId, convErr := strconv.ParseInt(makeMoveJSON.GameID, 10, 32) // TODO: refactor into own function.
+	if convErr != nil {
+		http.Error(w, `{"error":"bad gameId provided"}`, http.StatusBadRequest)
+		return
+	}
+	game, findGameErr := gm.GetGameById(int(gameId)) // TODO: refactor into own function.
+	if findGameErr != nil {
+		http.Error(w, `{"error":"game does not exist"}`, http.StatusBadRequest)
+		return
+	}
+	location, convErr := strconv.ParseInt(makeMoveJSON.Location, 10, 32)
+	if convErr != nil {
+		http.Error(w, `{"error":"bad location provided"}`, http.StatusBadRequest)
+		return
+	}
+
+	err = gm.MakeMove(game.GetId(), tictactoe.Cell(makeMoveJSON.Player), tictactoe.Location(location))
+	if err != nil {
+		http.Error(w, fmt.Sprintf(`{"error":"%s"}`, err.Error()), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
