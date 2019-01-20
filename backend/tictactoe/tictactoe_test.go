@@ -11,7 +11,7 @@ func TestNewGameHasClearBoard(t *testing.T) {
 	board := game.GetBoard()
 
 	if board != "---------" {
-		t.Fatalf("Game board is not initially cleared")
+		t.Fatal("Game board is not initially cleared")
 	}
 }
 
@@ -32,7 +32,7 @@ func TestOneConsecutiveMovePerPlayer(t *testing.T) {
 	err := game.MakeMove(tictactoe.Cross, tictactoe.Centre)
 
 	if err == nil {
-		t.Fatalf("Player was able to take two consecutive turns")
+		t.Fatal("Player was able to take two consecutive turns")
 	}
 }
 
@@ -56,7 +56,7 @@ func TestDrawnGameHasNoWinner(t *testing.T) {
 	// X | O | X
 
 	if !game.IsGameOver() {
-		t.Fatalf("Game has not ended after nine turns")
+		t.Fatal("Game has not ended after nine turns")
 	}
 	winner := game.GetWinner()
 	if winner != tictactoe.None {
@@ -81,10 +81,10 @@ func TestCrossWins(t *testing.T) {
 
 	winner := game.GetWinner()
 	if winner != tictactoe.Cross {
-		t.Fatalf("Cross is not the winner")
+		t.Fatal("Cross is not the winner")
 	}
 	if !game.IsGameOver() {
-		t.Fatalf("Game has not ended after Cross won")
+		t.Fatal("Game has not ended after Cross won")
 	}
 }
 
@@ -106,10 +106,10 @@ func TestNoughtWins(t *testing.T) {
 
 	winner := game.GetWinner()
 	if winner != tictactoe.Nought {
-		t.Fatalf("Nought is not the winner")
+		t.Fatal("Nought is not the winner")
 	}
 	if !game.IsGameOver() {
-		t.Fatalf("Game has not ended after Nought won")
+		t.Fatal("Game has not ended after Nought won")
 	}
 }
 
@@ -133,7 +133,7 @@ func TestCannotMakeMoveOnOccupiedCell(t *testing.T) {
 	// X | O | X
 
 	if !game.IsGameOver() {
-		t.Fatalf("Game has not ended after nine turns")
+		t.Fatal("Game has not ended after nine turns")
 	}
 	winner := game.GetWinner()
 	if winner != tictactoe.None {
@@ -148,7 +148,7 @@ func TestCannotClearOccupiedCell(t *testing.T) {
 	err := game.MakeMove(tictactoe.None, tictactoe.Left)
 
 	if err == nil {
-		t.Fatalf("Occupied cell was cleared")
+		t.Fatal("Occupied cell was cleared")
 	}
 }
 
@@ -158,7 +158,7 @@ func TestCannotMakeMoveOutsideTheBoard(t *testing.T) {
 	err := game.MakeMove(tictactoe.Cross, -1)
 
 	if err == nil {
-		t.Fatalf("A move was allowed outside the board")
+		t.Fatal("A move was allowed outside the board")
 	}
 }
 
@@ -180,6 +180,6 @@ func TestCannotMakeMoveOnceGameHasEnded(t *testing.T) {
 	err := game.MakeMove(tictactoe.Cross, tictactoe.Top)
 
 	if err == nil {
-		t.Fatalf("A move was allowed after the game ended")
+		t.Fatal("A move was allowed after the game ended")
 	}
 }
