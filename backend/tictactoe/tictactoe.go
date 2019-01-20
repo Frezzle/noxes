@@ -52,8 +52,12 @@ func (g Game) GetWinner() Cell {
 	return g.winner
 }
 
-func (g Game) GetBoard() (s string) {
+func (g Game) GetBoard() string {
 	return g.board
+}
+
+func (g Game) GetNextTurn() Cell {
+	return g.nextTurn
 }
 
 func (g *Game) MakeMove(cell Cell, loc Location) error {
