@@ -26,6 +26,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(address, nil))
 }
 
+// TODO: Update model to use different data types to avoid so many type conversions.
 type GameJSON struct {
 	ID       string `json:"id"`
 	Board    string `json:"board"`
@@ -42,16 +43,12 @@ type IdJSON struct {
 
 var gm = game_manager.NewGameManager()
 
-func getGameHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
-		return
-	} else if r.Body == nil {
-		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+func getGameHandler(w http.ResponseWriter, r *http.Request) { // TODO: GET body should not be used; get ID from somewhere else (e.g. URL, header, other).
+	if !verifyRequest("GET", w, r) {
 		return
 	}
 
-	var gameIdJSON IdJSON // only care about id from this object
+	var gameIdJSON IdJSON
 	err := json.NewDecoder(r.Body).Decode(&gameIdJSON)
 	if err != nil {
 		http.Error(w, fmt.Sprintf(`{"error":"%s"}`, err.Error()), http.StatusBadRequest)
@@ -82,11 +79,7 @@ func getGameHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllGamesHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
-		return
-	} else if r.Body == nil {
-		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+	if !verifyRequest("GET", w, r) {
 		return
 	}
 
@@ -106,11 +99,7 @@ func getAllGamesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createGameHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
-		return
-	} else if r.Body == nil {
-		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+	if !verifyRequest("POST", w, r) {
 		return
 	}
 
@@ -128,11 +117,7 @@ type MakeMoveJSON struct {
 }
 
 func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
-		return
-	} else if r.Body == nil {
-		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+	if !verifyRequest("POST", w, r) {
 		return
 	}
 
@@ -169,4 +154,16 @@ func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func verifyRequest(supportedMethod string, w http.ResponseWriter, r *http.Request) bool {
+	if r.Method != supportedMethod {
+		http.Error(w, fmt.Sprintf(`{"error":"Invalid request method: %s"}`, r.Method), http.StatusMethodNotAllowed)
+		return false
+	} else if r.Body == nil {
+		http.Error(w, `{"error":"Please send a request body"}`, http.StatusBadRequest)
+		return false
+	}
+
+	return true
 }
