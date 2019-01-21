@@ -147,3 +147,11 @@ Request:
     ```
 
 If your move was successful then the response is a `200 OK` status with no body.
+
+## Bonus
+
+How many valid board permutations are there for a TicTacToe game?
+
+```
+go run noxes/permutations/permutations.go
+```
