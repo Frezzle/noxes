@@ -28,7 +28,7 @@ func main() {
 		port = "9876"
 	}
 
-	address := "localhost:" + port
+	address := "0.0.0.0:" + port
 	log.Printf("Listening on %s", address)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
