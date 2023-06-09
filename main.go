@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/Frezzle/noxes/game_manager"
@@ -22,7 +23,12 @@ func main() {
 	// http.HandleFunc("/user/register", ...)
 	// http.HandleFunc("/user/login", ...)
 
-	address := "localhost:9876"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9876"
+	}
+
+	address := "localhost:" + port
 	log.Printf("Listening on %s", address)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
