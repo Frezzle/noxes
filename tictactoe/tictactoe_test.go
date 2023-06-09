@@ -1,12 +1,11 @@
-package tictactoe_test
+package tictactoe
 
 import (
-	"noxes/tictactoe"
 	"testing"
 )
 
 func TestNewGameHasClearBoard(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
 	board := game.GetBoard()
 
@@ -16,9 +15,9 @@ func TestNewGameHasClearBoard(t *testing.T) {
 }
 
 func TestCrossAlwaysStarts(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	err := game.MakeMove(tictactoe.Cross, tictactoe.Centre)
+	err := game.MakeMove(Cross, Centre)
 
 	if err != nil {
 		t.Fatalf("Cross was unable to start the game: %s", err)
@@ -26,10 +25,10 @@ func TestCrossAlwaysStarts(t *testing.T) {
 }
 
 func TestOneConsecutiveMovePerPlayer(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.Centre)
-	err := game.MakeMove(tictactoe.Cross, tictactoe.Centre)
+	game.MakeMove(Cross, Centre)
+	err := game.MakeMove(Cross, Centre)
 
 	if err == nil {
 		t.Fatal("Player was able to take two consecutive turns")
@@ -37,17 +36,17 @@ func TestOneConsecutiveMovePerPlayer(t *testing.T) {
 }
 
 func TestDrawnGameHasNoWinner(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	game.MakeMove(tictactoe.Nought, tictactoe.TopLeft)
-	game.MakeMove(tictactoe.Cross, tictactoe.Top)
-	game.MakeMove(tictactoe.Nought, tictactoe.Centre)
-	game.MakeMove(tictactoe.Cross, tictactoe.TopRight)
-	game.MakeMove(tictactoe.Nought, tictactoe.Right)
-	game.MakeMove(tictactoe.Cross, tictactoe.BottomRight)
-	game.MakeMove(tictactoe.Nought, tictactoe.Bottom)
-	game.MakeMove(tictactoe.Cross, tictactoe.BottomLeft)
+	game.MakeMove(Cross, Left)
+	game.MakeMove(Nought, TopLeft)
+	game.MakeMove(Cross, Top)
+	game.MakeMove(Nought, Centre)
+	game.MakeMove(Cross, TopRight)
+	game.MakeMove(Nought, Right)
+	game.MakeMove(Cross, BottomRight)
+	game.MakeMove(Nought, Bottom)
+	game.MakeMove(Cross, BottomLeft)
 	// board should look like this:
 	// O | X | X
 	// ----------
@@ -59,19 +58,19 @@ func TestDrawnGameHasNoWinner(t *testing.T) {
 		t.Fatal("Game has not ended after nine turns")
 	}
 	winner := game.GetWinner()
-	if winner != tictactoe.None {
+	if winner != None {
 		t.Fatalf("Drawn game has %s as the winner", winner)
 	}
 }
 
 func TestCrossWins(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.TopLeft)
-	game.MakeMove(tictactoe.Nought, tictactoe.Centre)
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	game.MakeMove(tictactoe.Nought, tictactoe.Bottom)
-	game.MakeMove(tictactoe.Cross, tictactoe.BottomLeft)
+	game.MakeMove(Cross, TopLeft)
+	game.MakeMove(Nought, Centre)
+	game.MakeMove(Cross, Left)
+	game.MakeMove(Nought, Bottom)
+	game.MakeMove(Cross, BottomLeft)
 	// board should look like this:
 	// X | - | -
 	// ----------
@@ -80,7 +79,7 @@ func TestCrossWins(t *testing.T) {
 	// X | O | -
 
 	winner := game.GetWinner()
-	if winner != tictactoe.Cross {
+	if winner != Cross {
 		t.Fatal("Cross is not the winner")
 	}
 	if !game.IsGameOver() {
@@ -89,14 +88,14 @@ func TestCrossWins(t *testing.T) {
 }
 
 func TestNoughtWins(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.TopLeft)
-	game.MakeMove(tictactoe.Nought, tictactoe.Centre)
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	game.MakeMove(tictactoe.Nought, tictactoe.TopRight)
-	game.MakeMove(tictactoe.Cross, tictactoe.Right)
-	game.MakeMove(tictactoe.Nought, tictactoe.BottomLeft)
+	game.MakeMove(Cross, TopLeft)
+	game.MakeMove(Nought, Centre)
+	game.MakeMove(Cross, Left)
+	game.MakeMove(Nought, TopRight)
+	game.MakeMove(Cross, Right)
+	game.MakeMove(Nought, BottomLeft)
 	// board should look like this:
 	// X | - | O
 	// ----------
@@ -105,7 +104,7 @@ func TestNoughtWins(t *testing.T) {
 	// O | - | -
 
 	winner := game.GetWinner()
-	if winner != tictactoe.Nought {
+	if winner != Nought {
 		t.Fatal("Nought is not the winner")
 	}
 	if !game.IsGameOver() {
@@ -114,17 +113,17 @@ func TestNoughtWins(t *testing.T) {
 }
 
 func TestCannotMakeMoveOnOccupiedCell(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	game.MakeMove(tictactoe.Nought, tictactoe.TopLeft)
-	game.MakeMove(tictactoe.Cross, tictactoe.Top)
-	game.MakeMove(tictactoe.Nought, tictactoe.Centre)
-	game.MakeMove(tictactoe.Cross, tictactoe.TopRight)
-	game.MakeMove(tictactoe.Nought, tictactoe.Right)
-	game.MakeMove(tictactoe.Cross, tictactoe.BottomRight)
-	game.MakeMove(tictactoe.Nought, tictactoe.Bottom)
-	game.MakeMove(tictactoe.Cross, tictactoe.BottomLeft)
+	game.MakeMove(Cross, Left)
+	game.MakeMove(Nought, TopLeft)
+	game.MakeMove(Cross, Top)
+	game.MakeMove(Nought, Centre)
+	game.MakeMove(Cross, TopRight)
+	game.MakeMove(Nought, Right)
+	game.MakeMove(Cross, BottomRight)
+	game.MakeMove(Nought, Bottom)
+	game.MakeMove(Cross, BottomLeft)
 	// board should look like this:
 	// O | X | X
 	// ----------
@@ -136,16 +135,16 @@ func TestCannotMakeMoveOnOccupiedCell(t *testing.T) {
 		t.Fatal("Game has not ended after nine turns")
 	}
 	winner := game.GetWinner()
-	if winner != tictactoe.None {
+	if winner != None {
 		t.Fatalf("Drawn game has %s as the winner", winner)
 	}
 }
 
 func TestCannotClearOccupiedCell(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	err := game.MakeMove(tictactoe.None, tictactoe.Left)
+	game.MakeMove(Cross, Left)
+	err := game.MakeMove(None, Left)
 
 	if err == nil {
 		t.Fatal("Occupied cell was cleared")
@@ -153,9 +152,9 @@ func TestCannotClearOccupiedCell(t *testing.T) {
 }
 
 func TestCannotMakeMoveOutsideTheBoard(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	err := game.MakeMove(tictactoe.Cross, -1)
+	err := game.MakeMove(Cross, -1)
 
 	if err == nil {
 		t.Fatal("A move was allowed outside the board")
@@ -163,21 +162,21 @@ func TestCannotMakeMoveOutsideTheBoard(t *testing.T) {
 }
 
 func TestCannotMakeMoveOnceGameHasEnded(t *testing.T) {
-	game := tictactoe.NewGame()
+	game := NewGame()
 
-	game.MakeMove(tictactoe.Cross, tictactoe.TopLeft)
-	game.MakeMove(tictactoe.Nought, tictactoe.Centre)
-	game.MakeMove(tictactoe.Cross, tictactoe.Left)
-	game.MakeMove(tictactoe.Nought, tictactoe.TopRight)
-	game.MakeMove(tictactoe.Cross, tictactoe.Right)
-	game.MakeMove(tictactoe.Nought, tictactoe.BottomLeft)
+	game.MakeMove(Cross, TopLeft)
+	game.MakeMove(Nought, Centre)
+	game.MakeMove(Cross, Left)
+	game.MakeMove(Nought, TopRight)
+	game.MakeMove(Cross, Right)
+	game.MakeMove(Nought, BottomLeft)
 	// board should look like this:
 	// X | - | O
 	// ----------
 	// X | O | X
 	// ----------
 	// O | - | -
-	err := game.MakeMove(tictactoe.Cross, tictactoe.Top)
+	err := game.MakeMove(Cross, Top)
 
 	if err == nil {
 		t.Fatal("A move was allowed after the game ended")

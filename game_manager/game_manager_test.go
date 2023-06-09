@@ -1,14 +1,14 @@
-package game_manager_test
+package game_manager
 
 import (
-	"noxes/game_manager"
-	"noxes/tictactoe"
-	"noxes/utils"
 	"testing"
+
+	"github.com/Frezzle/noxes/tictactoe"
+	"github.com/Frezzle/noxes/utils"
 )
 
 func TestCreatingFiveNewGamesResultsInFiveGamesBeingManaged(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	for i := 0; i < 5; i++ {
 		gm.CreateNewGame()
 	}
@@ -21,7 +21,7 @@ func TestCreatingFiveNewGamesResultsInFiveGamesBeingManaged(t *testing.T) {
 }
 
 func TestGameIdsShouldBeUnique(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	ids := make([]int, 10)
 
 	for i := 0; i < 10; i++ {
@@ -35,7 +35,7 @@ func TestGameIdsShouldBeUnique(t *testing.T) {
 }
 
 func TestGetExistingGameReturnsGameWithSameId(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	for i := 0; i < 3; i++ {
 		gm.CreateNewGame()
 	}
@@ -51,7 +51,7 @@ func TestGetExistingGameReturnsGameWithSameId(t *testing.T) {
 }
 
 func TestGetNonExistingGameByIdReturnsError(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 
 	desiredGameId := 100
 	_, err := gm.GetGameById(desiredGameId)
@@ -62,7 +62,7 @@ func TestGetNonExistingGameByIdReturnsError(t *testing.T) {
 }
 
 func TestMakingAMoveOnExistingGameUpdatesTheGame(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	gameId := gm.CreateNewGame()
 
 	gm.MakeMove(gameId, tictactoe.Cross, tictactoe.Centre)
@@ -76,7 +76,7 @@ func TestMakingAMoveOnExistingGameUpdatesTheGame(t *testing.T) {
 }
 
 func TestMakingAMoveOnNonExistingGameReturnsError(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 
 	err := gm.MakeMove(0, tictactoe.Cross, tictactoe.Centre)
 
@@ -86,7 +86,7 @@ func TestMakingAMoveOnNonExistingGameReturnsError(t *testing.T) {
 }
 
 func TestWinningAGameUpdatesWinnerAndGameOver(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	gameId := gm.CreateNewGame()
 
 	gm.MakeMove(gameId, tictactoe.Cross, tictactoe.Centre)
@@ -110,7 +110,7 @@ func TestWinningAGameUpdatesWinnerAndGameOver(t *testing.T) {
 }
 
 func TestWinningAGameEndsTheGame(t *testing.T) {
-	gm := game_manager.NewGameManager()
+	gm := NewGameManager()
 	gameId := gm.CreateNewGame()
 
 	gm.MakeMove(gameId, tictactoe.Cross, tictactoe.Centre)

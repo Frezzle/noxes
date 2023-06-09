@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"noxes/game_manager"
-	"noxes/tictactoe"
 	"strconv"
+
+	"github.com/Frezzle/noxes/game_manager"
+	"github.com/Frezzle/noxes/tictactoe"
 )
 
 func main() {

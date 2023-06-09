@@ -2,7 +2,8 @@ package game_manager
 
 import (
 	"fmt"
-	"noxes/tictactoe"
+
+	"github.com/Frezzle/noxes/tictactoe"
 )
 
 type Game struct {

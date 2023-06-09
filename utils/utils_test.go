@@ -1,8 +1,9 @@
 package utils_test
 
 import (
-	"noxes/utils"
 	"testing"
+
+	"github.com/Frezzle/noxes/utils"
 )
 
 func TestNilSlicesAreEqual(t *testing.T) {
